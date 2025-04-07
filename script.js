@@ -23,6 +23,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let isFetching = false; // *** 追蹤是否正在獲取資料 ***
 
     /**
+     * 更新目前啟用任務按鈕的高亮狀態
+     * @param {number} activeMissionNumber - 要高亮的 Mission 編號
+     */
+    function updateActiveMissionButton(activeMissionNumber) {
+        if (!sideNav) return; // 如果側邊欄不存在則返回
+
+        const buttons = sideNav.querySelectorAll('button[data-mission-target]');
+        buttons.forEach(button => {
+            button.classList.remove('active-mission'); // 先移除所有按鈕的高亮
+            const missionTarget = parseInt(button.getAttribute('data-mission-target'), 10);
+            if (missionTarget === activeMissionNumber) {
+                button.classList.add('active-mission'); // 為目標按鈕添加高亮
+            }
+        });
+    }
+
+    /**
      * 更新積分榜 UI
      * @param {Array} data - 從 Apps Script 取得的已排序資料陣列
      */
@@ -130,6 +147,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (sideNav) {
                     sideNav.classList.remove('nav-locked');
                     console.log('Side nav unlocked.');
+
+                    // *** 新增：檢查滑鼠是否懸停，若否則強制收合 ***
+                    // 使用 setTimeout 稍微延遲，避免立即收合影響點擊
+                    setTimeout(() => {
+                        if (sideNav && !sideNav.matches(':hover')) {
+                            // 暫時添加 class 強制收合，然後移除
+                            sideNav.classList.add('force-collapse');
+                            console.log('Forcing collapse after fetch.');
+                            // 短暫延遲後移除 class，恢復 hover 功能
+                            setTimeout(() => sideNav.classList.remove('force-collapse'), 50);
+                        }
+                    }, 50);
                 }
             }
         }
@@ -181,8 +210,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // 呼叫 fetch 時標記為手動切換
         fetchLeaderboardData(currentMission, true);
 
+        // *** 新增：更新按鈕高亮 ***
+        updateActiveMissionButton(currentMission);
+
         // 重設計時器
         setupAutoRefresh();
+
+        // *** 新增：手動切換後，如果滑鼠不在 nav 上，也強制收合 ***
+        // 使用 setTimeout 稍微延遲
+        setTimeout(() => {
+            if (sideNav && !sideNav.matches(':hover')) {
+                // 暫時添加 class 強制收合，然後移除
+                sideNav.classList.add('force-collapse');
+                console.log('Forcing collapse after manual switch.');
+                // 短暫延遲後移除 class，恢復 hover 功能
+                setTimeout(() => sideNav.classList.remove('force-collapse'), 50);
+            }
+        }, 50);
     }
 
     // --- 初始化 --- 
@@ -192,6 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         pageWrapper.setAttribute('data-mission', currentMission);
         document.body.dataset.mission = currentMission; // 同步更新 body
     }
+    // *** 新增：初始化時設定按鈕高亮 ***
+    updateActiveMissionButton(currentMission);
+
     // *** 初始載入時顯示載入中 ***
     fetchLeaderboardData(currentMission, true);
     setupAutoRefresh();

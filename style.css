@@ -193,56 +193,85 @@ header h1 {
     position: fixed; /* 固定在視窗 */
     left: 0;
     top: 50%; /* 垂直置中 */
-    transform: translate(-90%, -50%); /* 預設收合，往左移 90% */
+    /* 移除預設的 transform */
     background-color: rgba(240, 240, 240, 0.9); /* 半透明背景 */
-    padding: 10px 5px 10px 10px; /* 內距調整 */
+    /* padding: 10px; 簡化 padding */
+    padding: 10px 0 10px 10px; /* 移除右邊 padding */
+    width: 100px; /* 調整寬度 */
     border-radius: 0 8px 8px 0; /* 右側圓角 */
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     transition: transform 0.3s ease; /* 平滑動畫 */
     z-index: 1000; /* 確保在最上層 */
+    /* transform: translate(0, -50%); 預設展開 */
+    transform: translate(calc(-100% + 30px), -50%); /* 預設收合，露出 30px */
 }
 
+/* 移除收合狀態 */
+/* #side-nav.collapsed {
+    /* transform: translate(-95%, -50%); 收合時向左移動更多 */
+/*    transform: translate(calc(-100% + 35px), -50%); /* 保留右側 35px */
+/* } */
+
+/* 恢復 :hover 效果 */
 #side-nav:hover {
     transform: translate(0, -50%); /* 滑鼠懸停時完全展開 */
 }
 
 #side-nav button {
     display: block; /* 垂直排列 */
-    padding: 10px 15px;
+    /* padding: 10px 15px; */
+    padding: 10px 12px 10px 10px; /* 增加右 padding */
     margin-bottom: 5px;
     cursor: pointer;
     border: none;
     border-radius: 4px;
     background-color: transparent; /* 按鈕透明 */
-    text-align: left;
+    /* text-align: left; */
+    text-align: right; /* 文字靠右 */
     width: 100%;
     transition: background-color 0.3s ease;
     white-space: nowrap; /* 防止文字換行 */
 }
 
-#side-nav button:last-child {
-    margin-bottom: 0;
-}
+/* 移除收合按鈕的樣式 */
+/* #nav-toggle-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px 5px;
+    width: 25px; /* 設定固定寬度 */
+/*    background-color: rgba(200, 200, 200, 0.8);
+    border-radius: 4px;
+    font-weight: bold;
+    line-height: 1;
+    text-align: center;
+    /* width: auto; 寬度自動 */
+/*    margin-bottom: 0; /* 覆蓋通用按鈕樣式 */
+    /* transition: right 0.3s ease; 新增過渡效果 */
+/*    z-index: 1001; /* 確保按鈕在背景之上 */
+/* } */
 
-#side-nav button:hover {
-    background-color: rgba(200, 200, 200, 0.8); /* 滑鼠懸停時按鈕背景 */
-}
-
-/* 調整 header 樣式 (移除按鈕相關) */
-header nav button:hover {
-    background-color: #e0e0e0;
-}
+/* 移除: 調整按鈕在收合時的位置 */
 
 /* 手機版側邊欄調整 (可選) */
 @media (max-width: 480px) {
     #side-nav {
-        transform: translate(-85%, -50%); /* 手機版預設收合更多一點 */
+        transform: translate(calc(-100% + 10px), -50%); /* 手機版露出少一點 */
+        width: 90px; /* 手機版窄一點 */
     }
     #side-nav button {
-        padding: 8px 10px;
+        padding: 8px 15px 8px 8px; /* 調整手機 padding */
     }
-     /* 移除舊的手機版 header nav button 調整 */
-    /* header nav button { ... } */
+    /* 移除收合按鈕相關樣式 */
+    /* #nav-toggle-button {
+        /* right: 3px; */ /* 使用統一的 right: 5px */
+    /*    padding: 6px 4px;
+        /* 手機上按鈕可以窄一點 */
+    /*    width: 22px;
+    } */
+    /* 移除: 調整手機版收合按鈕的位置 */
+
 }
 
 /* --- 前三名特殊樣式 --- */
@@ -292,12 +321,37 @@ header nav button:hover {
     opacity: 0.6;
     cursor: not-allowed;
     pointer-events: none; /* 阻止所有滑鼠事件 */
-    transform: translate(0, -50%) !important; /* 強制展開，避免收合狀態下看不到鎖定效果 */
+    /* 鎖定時也強制移回收合狀態 */
+    transform: translate(calc(-100% + 30px), -50%) !important; /* 使用預設收合狀態 */
+}
+/* 手機版鎖定樣式調整 */
+@media (max-width: 480px) {
+    #side-nav.nav-locked {
+        transform: translate(calc(-100% + 25px), -50%) !important;
+    }
 }
 
 /* (可選) 如果希望鎖定時按鈕內文字也變灰 */
-/*
 #side-nav.nav-locked button {
     color: #999;
 }
-*/ 
+
+/* 新增: 強制收合的 class */
+.force-collapse {
+    transform: translate(calc(-100% + 30px), -50%) !important; /* !important 確保覆蓋 :hover */
+    transition: none !important; /* 收合時不要動畫，避免視覺衝突 */
+}
+/* 手機版的強制收合 */
+@media (max-width: 480px) {
+    .force-collapse {
+        transform: translate(calc(-100% + 25px), -50%) !important;
+    }
+}
+
+/* 新增：目前啟用任務的按鈕高亮樣式 */
+#side-nav button.active-mission {
+    font-weight: bold;
+    /* background-color: rgba(200, 200, 200, 0.7); /* 舊的淺灰色背景 */
+    background-color: #0056b3; /* 深藍色背景 */
+    color: #ffffff; /* 白色文字 */
+} 
