@@ -35,11 +35,11 @@ body[data-mission="5"] { background-color: #141414; }
 }
 
 /* 設定不同 Mission 的背景 (移除 background-color) */
-#page-wrapper[data-mission="1"] { background-image: url('bg1.png'); }
-#page-wrapper[data-mission="2"] { background-image: url('bg2.png'); }
-#page-wrapper[data-mission="3"] { background-image: url('bg3.png'); }
-#page-wrapper[data-mission="4"] { background-image: url('bg4.png'); }
-#page-wrapper[data-mission="5"] { background-image: url('bg5.png'); }
+#page-wrapper[data-mission="1"] { background-image: url('bg1.webp'); }
+#page-wrapper[data-mission="2"] { background-image: url('bg2.webp'); }
+#page-wrapper[data-mission="3"] { background-image: url('bg3.webp'); }
+#page-wrapper[data-mission="4"] { background-image: url('bg4.webp'); }
+#page-wrapper[data-mission="5"] { background-image: url('bg5.webp'); }
 
 header {
     /* background-color: rgba(255, 255, 255, 0.8); */ /* 可以恢復或調整 */
