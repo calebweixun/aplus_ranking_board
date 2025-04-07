@@ -1,0 +1,296 @@
+/* 基本重設與全域設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: sans-serif;
+    color: #333;
+    background-color: black; /* body 背景設為黑色 */
+    min-height: 100vh;
+}
+
+/* 新增 page-wrapper 樣式 */
+#page-wrapper {
+    max-width: 820px; /* 最大寬度 820px */
+    margin: 0 auto; /* 水平置中 */
+    position: relative; /* 相對定位 */
+    min-height: 100vh; /* 最小高度為視窗高度 */
+    background-size: cover; /* 背景圖片填滿此容器 */
+    background-position: center top; /* 置中靠上 */
+    background-attachment: scroll; /* 背景隨內容滾動 (不再 fixed) */
+    background-repeat: no-repeat; /* 確保背景不重複 */
+    transition: background-image 0.5s ease-in-out; /* 將 transition 移到這裡 */
+    box-shadow: 0 0 15px rgba(0,0,0,0.5); /* 可選：為 wrapper 加上陰影 */
+    overflow: hidden; /* 確保 page-wrapper 本身不滾動 */
+}
+
+/* 設定不同 Mission 的背景 (選擇器改為 #page-wrapper) */
+#page-wrapper[data-mission="1"] { background-image: url('bg1.png'); }
+#page-wrapper[data-mission="2"] { background-image: url('bg2.png'); }
+#page-wrapper[data-mission="3"] { background-image: url('bg3.png'); }
+#page-wrapper[data-mission="4"] { background-image: url('bg4.png'); }
+#page-wrapper[data-mission="5"] { background-image: url('bg5.png'); }
+
+header {
+    /* background-color: rgba(255, 255, 255, 0.8); */ /* 可以恢復或調整 */
+    padding: 15px;
+    text-align: center;
+    /* margin-bottom: 20px; */ /* header 和 main 的間距由 main 的 margin-top 控制 */
+    box-shadow: none; /* 移除 header 陰影，加到 wrapper 上 */
+}
+
+header h1 {
+    margin-bottom: 10px;
+    color: #444;
+    display: none; /* 新增此行來隱藏標題 */
+}
+
+/* 積分榜容器 */
+.leaderboard-container {
+    width: 85%;
+    max-width: none;
+    margin: 18vh auto 0 auto; /* 將頂部 margin 改為 18vh */
+    padding: 0; /* 移除左右 padding */
+    height: 75vh; /* 設定固定高度，例如視窗高度的 60% */
+    overflow-y: auto; /* 內容超出時，顯示垂直滾動條 */
+    /* 美化滾動條 (可選，跨瀏覽器兼容性需注意) */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox */
+}
+
+/* Webkit (Chrome, Safari) 滾動條美化 */
+.leaderboard-container::-webkit-scrollbar {
+    width: 8px;
+}
+.leaderboard-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+.leaderboard-container::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+/* 積分卡片樣式 */
+.leaderboard-card {
+    background-color: rgba(255, 255, 255, 0.9); /* 卡片半透明背景 */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+
+.leaderboard-card:hover {
+    transform: translateY(-3px); /* 輕微上移效果 */
+}
+
+.leaderboard-card .rank {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+    min-width: 40px; /* 確保排名數字有足夠空間 */
+    text-align: center;
+}
+
+.leaderboard-card .info {
+    flex-grow: 1; /* 佔用中間剩餘空間 */
+    margin: 0 15px;
+}
+
+.leaderboard-card .info p {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: #555;
+}
+.leaderboard-card .info p:last-child {
+    margin-bottom: 0;
+}
+
+.leaderboard-card .score {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #007bff; /* 分數顏色 */
+    min-width: 50px; /* 確保分數有足夠空間 */
+    text-align: right;
+}
+
+/* RWD 調整 */
+/* 平板 (Tablet) */
+@media (max-width: 768px) {
+    #page-wrapper {
+        max-width: 100%; /* 平板和手機取消最大寬度限制 */
+        box-shadow: none; /* 移除陰影 */
+    }
+    .leaderboard-container {
+        width: 85%; /* 寬度調整 */
+    }
+    .leaderboard-card .info p {
+        font-size: 0.85em;
+    }
+}
+
+/* 手機 (Mobile) */
+@media (max-width: 480px) {
+    header {
+        padding: 10px;
+    }
+     header h1 {
+        font-size: 1.5em;
+    }
+    header nav button {
+        padding: 6px 10px;
+        font-size: 0.9em;
+        margin: 3px;
+    }
+
+    .leaderboard-container {
+        width: 85%;
+        margin-top: 18vh; /* 手機頂部 margin 也改為 18vh */
+        height: 75vh; /* 稍微增加手機列表高度以利用空間 */
+    }
+
+    .leaderboard-card {
+        padding: 10px;
+        flex-wrap: wrap; /* 必要時換行 */
+    }
+
+    .leaderboard-card .rank {
+        font-size: 1.2em;
+        min-width: 30px;
+    }
+
+    .leaderboard-card .info {
+        margin: 5px 0 5px 10px; /* 調整手機版間距 */
+    }
+    .leaderboard-card .info p {
+        font-size: 0.8em;
+    }
+
+
+    .leaderboard-card .score {
+        font-size: 1.1em;
+        min-width: 40px;
+        margin-left: auto; /* 將分數推到右邊 */
+        text-align: right;
+    }
+}
+
+/* 新增側邊導覽列樣式 */
+#side-nav {
+    position: fixed; /* 固定在視窗 */
+    left: 0;
+    top: 50%; /* 垂直置中 */
+    transform: translate(-90%, -50%); /* 預設收合，往左移 90% */
+    background-color: rgba(240, 240, 240, 0.9); /* 半透明背景 */
+    padding: 10px 5px 10px 10px; /* 內距調整 */
+    border-radius: 0 8px 8px 0; /* 右側圓角 */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease; /* 平滑動畫 */
+    z-index: 1000; /* 確保在最上層 */
+}
+
+#side-nav:hover {
+    transform: translate(0, -50%); /* 滑鼠懸停時完全展開 */
+}
+
+#side-nav button {
+    display: block; /* 垂直排列 */
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: transparent; /* 按鈕透明 */
+    text-align: left;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    white-space: nowrap; /* 防止文字換行 */
+}
+
+#side-nav button:last-child {
+    margin-bottom: 0;
+}
+
+#side-nav button:hover {
+    background-color: rgba(200, 200, 200, 0.8); /* 滑鼠懸停時按鈕背景 */
+}
+
+/* 調整 header 樣式 (移除按鈕相關) */
+header nav button:hover {
+    background-color: #e0e0e0;
+}
+
+/* 手機版側邊欄調整 (可選) */
+@media (max-width: 480px) {
+    #side-nav {
+        transform: translate(-85%, -50%); /* 手機版預設收合更多一點 */
+    }
+    #side-nav button {
+        padding: 8px 10px;
+    }
+     /* 移除舊的手機版 header nav button 調整 */
+    /* header nav button { ... } */
+}
+
+/* --- 前三名特殊樣式 --- */
+
+/* 第一名 */
+.leaderboard-card.rank-1 {
+    background-color: #FACA84; /* 主要背景色 */
+    border: 2px solid #E8A84C; /* 可選：加上邊框增加區別 */
+}
+/* 調整第一名卡片內的文字顏色以確保可讀性 */
+.leaderboard-card.rank-1,
+.leaderboard-card.rank-1 .rank,
+.leaderboard-card.rank-1 .info p,
+.leaderboard-card.rank-1 .score {
+    color: #4E360C; /* 深棕色文字 */
+}
+.leaderboard-card.rank-1 .score {
+    font-weight: bolder; /* 分數加粗 */
+}
+
+/* 第二名 */
+.leaderboard-card.rank-2 {
+    background-color: #C87B45; /* 主要背景色 */
+}
+/* 調整第二名卡片內的文字顏色 */
+.leaderboard-card.rank-2,
+.leaderboard-card.rank-2 .rank,
+.leaderboard-card.rank-2 .info p,
+.leaderboard-card.rank-2 .score {
+    color: #FFF0E6; /* 淺米白色文字 */
+}
+
+/* 第三名 */
+.leaderboard-card.rank-3 {
+    background-color: #994A34; /* 主要背景色 */
+}
+/* 調整第三名卡片內的文字顏色 */
+.leaderboard-card.rank-3,
+.leaderboard-card.rank-3 .rank,
+.leaderboard-card.rank-3 .info p,
+.leaderboard-card.rank-3 .score {
+    color: #FFDAB9; /* 蜜桃色文字 */
+}
+
+/* --- 側邊導覽列鎖定樣式 --- */
+#side-nav.nav-locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* 阻止所有滑鼠事件 */
+    transform: translate(0, -50%) !important; /* 強制展開，避免收合狀態下看不到鎖定效果 */
+}
+
+/* (可選) 如果希望鎖定時按鈕內文字也變灰 */
+/*
+#side-nav.nav-locked button {
+    color: #999;
+}
+*/ 
