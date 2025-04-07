@@ -48,8 +48,35 @@ function msUpdate(action) {
   // 獲取值
   var values = range.getValues();
 
-  // 將二維陣列轉換為物件陣列，並處理排名欄位
-  var data = values.map(function(row) {
+  // 根據 action 決定最低分數要求
+  var minScore;
+  switch (action) {
+    case 'ms1update': minScore = 7; break;
+    case 'ms2update': minScore = 14; break;
+    case 'ms3update': minScore = 21; break;
+    case 'ms4update': minScore = 28; break;
+    case 'ms5update': minScore = 36; break;
+    default:
+      // 理論上 doGet 已處理，但以防萬一設為 0 或記錄錯誤
+      Logger.log('Unexpected action in minScore determination: ' + action);
+      minScore = 0;
+  }
+
+  // 根據最低分數過濾資料列 (E 欄, 索引 3 是分數)
+  var filteredValues = values.filter(function(row) {
+    var scoreValue = parseFloat(row[3]);
+    // 確保分數是有效數字且大於等於最低要求
+    return !isNaN(scoreValue) && scoreValue >= minScore;
+  });
+
+  // 如果過濾後沒有資料列
+  if (filteredValues.length === 0) {
+    Logger.log('No data rows met the minimum score (' + minScore + ') for action: ' + action);
+    return []; // 返回空陣列
+  }
+
+  // 將 *過濾後的* 二維陣列轉換為物件陣列，並處理排名欄位
+  var data = filteredValues.map(function(row) {
     // 嘗試將排名轉換為數字，若失敗則設為 Infinity 以便排序時排在後面
     var rankValue = parseFloat(row[4]); // F 欄 (索引 4) 是排名
     return {

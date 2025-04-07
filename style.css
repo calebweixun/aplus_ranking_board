@@ -8,9 +8,16 @@
 body {
     font-family: sans-serif;
     color: #333;
-    background-color: black; /* body 背景設為黑色 */
     min-height: 100vh;
+    transition: background-color 0.5s ease-in-out; /* 新增：背景色切換動畫 */
 }
+
+/* 新增：針對 body 的 Mission 背景色 */
+body[data-mission="1"] { background-color: #000000; }
+body[data-mission="2"] { background-color: #020A0F; }
+body[data-mission="3"] { background-color: #000000; }
+body[data-mission="4"] { background-color: #0D0E0F; }
+body[data-mission="5"] { background-color: #141414; }
 
 /* 新增 page-wrapper 樣式 */
 #page-wrapper {
@@ -22,12 +29,12 @@ body {
     background-position: center top; /* 置中靠上 */
     background-attachment: scroll; /* 背景隨內容滾動 (不再 fixed) */
     background-repeat: no-repeat; /* 確保背景不重複 */
-    transition: background-image 0.5s ease-in-out; /* 將 transition 移到這裡 */
+    transition: background-image 0.5s ease-in-out; /* 背景圖片切換動畫 */
     box-shadow: 0 0 15px rgba(0,0,0,0.5); /* 可選：為 wrapper 加上陰影 */
     overflow: hidden; /* 確保 page-wrapper 本身不滾動 */
 }
 
-/* 設定不同 Mission 的背景 (選擇器改為 #page-wrapper) */
+/* 設定不同 Mission 的背景 (移除 background-color) */
 #page-wrapper[data-mission="1"] { background-image: url('bg1.png'); }
 #page-wrapper[data-mission="2"] { background-image: url('bg2.png'); }
 #page-wrapper[data-mission="3"] { background-image: url('bg3.png'); }

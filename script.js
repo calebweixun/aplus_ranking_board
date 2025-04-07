@@ -175,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 更新 page-wrapper 的 data-mission 屬性以改變背景
         if (pageWrapper) {
             pageWrapper.setAttribute('data-mission', currentMission);
+            document.body.dataset.mission = currentMission; // 同步更新 body
         }
 
         // 呼叫 fetch 時標記為手動切換
@@ -189,6 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pageWrapper) {
         // *** 確保 pageWrapper 的初始狀態與 currentMission 一致 ***
         pageWrapper.setAttribute('data-mission', currentMission);
+        document.body.dataset.mission = currentMission; // 同步更新 body
     }
     // *** 初始載入時顯示載入中 ***
     fetchLeaderboardData(currentMission, true);
@@ -215,5 +217,40 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    function changeMission(missionNumber) {
+        const pageWrapper = document.getElementById('page-wrapper');
+        if (pageWrapper) {
+            pageWrapper.dataset.mission = missionNumber;
+            document.body.dataset.mission = missionNumber; // 同步更新 body
+        }
+        console.log(`已切換至 Mission ${missionNumber}`);
+        history.pushState(null, null, `#mis${missionNumber}`);
+        // loadLeaderboardData(missionNumber);
+    }
+
+    function handleHashChange() {
+        const hash = window.location.hash;
+        let missionNumber = 1;
+        const pageWrapper = document.getElementById('page-wrapper');
+
+        if (hash.startsWith('#mis')) {
+            const num = parseInt(hash.substring(4));
+            if (!isNaN(num) && num >= 1 && num <= 5) {
+                missionNumber = num;
+            }
+        }
+
+        // 確保 pageWrapper 和 body 的 data-mission 更新
+        if (pageWrapper) { // 確保 wrapper 存在
+            const currentMission = pageWrapper.dataset.mission;
+            if (currentMission != missionNumber) {
+                pageWrapper.dataset.mission = missionNumber;
+                document.body.dataset.mission = missionNumber; // 同步更新 body
+                console.log(`透過 Hash 切換至 Mission ${missionNumber}`);
+                // loadLeaderboardData(missionNumber);
+            }
+        }
     }
 }); 
