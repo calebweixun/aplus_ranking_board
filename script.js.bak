@@ -116,66 +116,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`Fetching data for Mission ${missionNumber} (Manual: ${isManualSwitch})...`);
 
-        // *** 修改：如果是手動切換，則清空並顯示載入指示器 ***
+        // *** 如果是手動切換，則清空並顯示載入中 ***
         if (isManualSwitch && leaderboardContainer) {
-            // 完全清空容器
-            leaderboardContainer.innerHTML = '';
-
-            // 創建標題行 (顯示當前 Mission 編號)
-            const titleDiv = document.createElement('div');
-            titleDiv.style.position = 'absolute';
-            titleDiv.style.top = '5%';
-            titleDiv.style.left = '0';
-            titleDiv.style.width = '100%';
-            titleDiv.style.textAlign = 'center';
-            titleDiv.style.color = '#ffffff';
-            titleDiv.style.fontSize = '1.8rem';
-            titleDiv.style.fontWeight = 'bold';
-            titleDiv.innerHTML = `<p>排行榜載入中</p>`;
-
-            // 創建正中央的載入容器
-            const loadingContainer = document.createElement('div');
-            loadingContainer.classList.add('loading-container');
-            loadingContainer.style.position = 'absolute';
-            loadingContainer.style.top = '15%';
-            loadingContainer.style.left = '50%';
-            loadingContainer.style.transform = 'translate(-50%, -50%)';
-            loadingContainer.style.textAlign = 'center';
-            loadingContainer.style.width = '80%';
-            loadingContainer.style.maxWidth = '300px';
-
-            // 創建 loading-bar 元素
-            const loadingBar = document.createElement('div');
-            loadingBar.className = 'ldBar';
-            loadingBar.setAttribute('data-preset', 'stripe');
-            loadingBar.setAttribute('data-value', '99');
-            loadingBar.setAttribute('data-duration', '2');
-            loadingBar.style.margin = '0 auto';
-            loadingContainer.appendChild(loadingBar);
-
-            // // 添加載入中文字
-            // const loadingText = document.createElement('p');
-            // loadingText.textContent = '載入中...';
-            // loadingText.style.color = '#ddd';
-            // loadingText.style.marginTop = '10px';
-            // loadingText.style.fontSize = '1rem';
-            // loadingContainer.appendChild(loadingText);
-
-            // 使用相對定位容器以確保絕對定位元素可以正確顯示
-            const positionContainer = document.createElement('div');
-            positionContainer.style.position = 'relative';
-            positionContainer.style.width = '100%';
-            positionContainer.style.height = '100%';
-            positionContainer.style.minHeight = '50vh';
-
-            // 先添加標題，再添加載入器
-            positionContainer.appendChild(titleDiv);
-            positionContainer.appendChild(loadingContainer);
-
-            leaderboardContainer.appendChild(positionContainer);
-
-            // 初始化 loading-bar
-            new ldBar(loadingBar);
+            leaderboardContainer.innerHTML = '<p style="text-align: center; color: #ccc;">載入中...</p>';
         }
 
         try {
@@ -190,11 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             console.log(`Data received for Mission ${missionNumber}:`, data);
-            updateLeaderboardUI(data); // 成功後更新 UI (會覆蓋 loading-bar)
+            updateLeaderboardUI(data); // 成功後更新 UI (會覆蓋 "載入中...")
 
         } catch (error) {
             console.error('Error fetching or processing leaderboard data:', error);
-            // 顯示錯誤訊息 (也會覆蓋 loading-bar)
+            // 顯示錯誤訊息 (也會覆蓋 "載入中...")
             leaderboardContainer.innerHTML = `<p style="text-align: center; color: red;">無法載入排名資料：${error.message}</p>`;
 
         } finally {
@@ -209,9 +152,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // *** 修改：總是嘗試強制收合 (不再檢查 :hover) ***
                     setTimeout(() => {
                         if (sideNav) {
-                            // 移除 expanded 類別來收合側邊欄
-                            sideNav.classList.remove('expanded');
-                            console.log('Removing expanded class after fetch.');
+                            sideNav.classList.add('force-collapse');
+                            console.log('Forcing collapse after fetch.');
+                            setTimeout(() => sideNav.classList.remove('force-collapse'), 50);
                         }
                     }, 50);
                 }
@@ -312,11 +255,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 if (!isNaN(missionTarget) && missionTarget >= 1 && missionTarget <= 5) {
-                    // 先移除 expanded 類別來收合側邊欄
-                    sideNav.classList.remove('expanded');
-                    console.log('Side nav collapsed before mission switch.');
-
-                    // 然後切換任務
                     switchMission(missionTarget);
                 }
             }
@@ -332,10 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 idleTimerId = null;
                 // console.log('Idle timer cleared on mouseenter.');
             }
-
-            // 添加 expanded 類別來展開側邊欄
-            sideNav.classList.add('expanded');
-            console.log('Side nav expanded by mouseenter');
         });
 
         sideNav.addEventListener('mouseleave', () => {
@@ -345,10 +279,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             // console.log('Mouse left side-nav, starting idle timer.');
             idleTimerId = setTimeout(() => {
-                // 移除 expanded 類別來收合側邊欄
-                if (sideNav && !sideNav.classList.contains('nav-locked')) {
+                // 檢查是否未鎖定且當前是展開狀態 (不是由 force-collapse 添加的收合)
+                // 同時確認滑鼠確實不在上面 (以防萬一)
+                if (sideNav &&
+                    !sideNav.classList.contains('nav-locked') &&
+                    !sideNav.classList.contains('force-collapse') &&
+                    !sideNav.matches(':hover')) {
                     console.log('Idle timer triggered. Collapsing nav.');
-                    sideNav.classList.remove('expanded');
+                    sideNav.classList.add('force-collapse');
+                    // 短暫延遲後移除 class，恢復 hover 功能
+                    setTimeout(() => sideNav.classList.remove('force-collapse'), 50);
                 } else {
                     // console.log('Idle timer triggered but conditions not met for collapse.');
                 }

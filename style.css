@@ -66,6 +66,8 @@ header h1 {
     /* 美化滾動條 (可選，跨瀏覽器兼容性需注意) */
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox */
+    position: relative;
+    min-height: 300px;
 }
 
 /* Webkit (Chrome, Safari) 滾動條美化 */
@@ -195,26 +197,19 @@ header h1 {
     top: 50%; /* 垂直置中 */
     /* 移除預設的 transform */
     background-color: rgba(240, 240, 240, 0.9); /* 半透明背景 */
-    /* padding: 10px; 簡化 padding */
     padding: 10px 0 10px 10px; /* 移除右邊 padding */
     width: 100px; /* 調整寬度 */
     border-radius: 0 8px 8px 0; /* 右側圓角 */
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     transition: transform 0.3s ease; /* 平滑動畫 */
     z-index: 1000; /* 確保在最上層 */
-    /* transform: translate(0, -50%); 預設展開 */
-    transform: translate(calc(-100% + 30px), -50%); /* 預設收合，露出 30px */
+    transform: translate(calc(-100% + 25px), -50%); /* 預設收合，露出 30px */
 }
 
-/* 移除收合狀態 */
-/* #side-nav.collapsed {
-    /* transform: translate(-95%, -50%); 收合時向左移動更多 */
-/*    transform: translate(calc(-100% + 35px), -50%); /* 保留右側 35px */
-/* } */
-
-/* 恢復 :hover 效果 */
-#side-nav:hover {
-    transform: translate(0, -50%); /* 滑鼠懸停時完全展開 */
+/* 新增: 使用 .expanded 控制展開 */
+#side-nav.expanded {
+    transform: translate(0, -50%); /* 確保手機版完全展開 */
+    width: 100px; /* 增加展開時的寬度，確保按鈕文字完全顯示 */
 }
 
 #side-nav button {
@@ -233,44 +228,19 @@ header h1 {
     white-space: nowrap; /* 防止文字換行 */
 }
 
-/* 移除收合按鈕的樣式 */
-/* #nav-toggle-button {
-    position: absolute;
-    right: 5px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 8px 5px;
-    width: 25px; /* 設定固定寬度 */
-/*    background-color: rgba(200, 200, 200, 0.8);
-    border-radius: 4px;
-    font-weight: bold;
-    line-height: 1;
-    text-align: center;
-    /* width: auto; 寬度自動 */
-/*    margin-bottom: 0; /* 覆蓋通用按鈕樣式 */
-    /* transition: right 0.3s ease; 新增過渡效果 */
-/*    z-index: 1001; /* 確保按鈕在背景之上 */
-/* } */
-
-/* 移除: 調整按鈕在收合時的位置 */
-
 /* 手機版側邊欄調整 (可選) */
 @media (max-width: 480px) {
     #side-nav {
-        transform: translate(calc(-100% + 10px), -50%); /* 手機版露出少一點 */
-        width: 90px; /* 手機版窄一點 */
+        transform: translate(calc(-100% + 25px), -50%); /* 手機版露出少一點 */
+        width: 130px; /* 手機版窄一點 */
+    }
+    #side-nav.expanded {
+        transform: translate(0, -50%); /* 確保手機版完全展開 */
+        width: 200px; /* 手機版展開寬度 */
     }
     #side-nav button {
         padding: 8px 15px 8px 8px; /* 調整手機 padding */
     }
-    /* 移除收合按鈕相關樣式 */
-    /* #nav-toggle-button {
-        /* right: 3px; */ /* 使用統一的 right: 5px */
-    /*    padding: 6px 4px;
-        /* 手機上按鈕可以窄一點 */
-    /*    width: 22px;
-    } */
-    /* 移除: 調整手機版收合按鈕的位置 */
 
 }
 
@@ -327,7 +297,7 @@ header h1 {
 /* 手機版鎖定樣式調整 */
 @media (max-width: 480px) {
     #side-nav.nav-locked {
-        transform: translate(calc(-100% + 25px), -50%) !important;
+        transform: translate(calc(-100% + 75%), -50%) !important;
     }
 }
 
@@ -344,7 +314,7 @@ header h1 {
 /* 手機版的強制收合 */
 @media (max-width: 480px) {
     .force-collapse {
-        transform: translate(calc(-100% + 25px), -50%) !important;
+        transform: translate(calc(-100% + 30px), -50%) !important;
     }
 }
 
@@ -354,4 +324,43 @@ header h1 {
     /* background-color: rgba(200, 200, 200, 0.7); /* 舊的淺灰色背景 */
     background-color: #0056b3; /* 深藍色背景 */
     color: #ffffff; /* 白色文字 */
+}
+
+/* 載入指示器的樣式 */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.ldBar {
+    width: 100% !important;
+    height: 30px !important;
+    margin: 0 auto;
+}
+
+.ldBar-label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 針對手機版調整載入指示器 */
+@media (max-width: 480px) {
+    .ldBar {
+        width: 80% !important;
+        max-width: 250px !important;
+    }
+    
+    .ldBar-label {
+        font-size: 14px;
+    }
+}
+
+/* 確保正在載入時的容器有足夠的高度 */
+.leaderboard-container > div[style*="position: relative"] {
+    min-height: 50vh !important;
 } 
