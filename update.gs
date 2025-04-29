@@ -95,4 +95,60 @@ function msUpdate(action) {
 
   // 返回排序後的資料陣列
   return data;
+}
+
+function podium(action) {
+  var spreadsheet = SpreadsheetApp.openById('1ouA7Nh7_jKEc-VjYPxOcZlsbYmcLsGNPVet5b9pADjM');
+  var podiumSheet = spreadsheet.getSheetById(116449973);
+
+  if (!podiumSheet) {
+    Logger.log('Podium sheet not found');
+    return { status: 'error', message: 'Podium sheet not found' };
+  }
+
+  // 獲取資料範圍 (A2:J最後一列)
+  var lastRow = podiumSheet.getLastRow();
+  if (lastRow < 2) {
+    Logger.log('No data rows found in podium sheet');
+    return []; // 如果沒有資料列，返回空陣列
+  }
+
+  // getRange(起始列, 起始欄, 列數, 欄數)
+  var range = podiumSheet.getRange(2, 1, lastRow - 1, 10);
+  var values = range.getValues();
+
+  // 過濾出有排名（1-3）的資料
+  var filteredValues = values.filter(function(row) {
+    var rankValue = parseFloat(row[9]); // J 欄 (索引 9) 是最終頒獎台
+    return !isNaN(rankValue) && rankValue >= 1 && rankValue <= 3;
+  });
+
+  // 如果過濾後沒有資料列
+  if (filteredValues.length === 0) {
+    Logger.log('No podium data found');
+    return []; // 返回空陣列
+  }
+
+  // 將資料轉換為物件陣列
+  var data = filteredValues.map(function(row) {
+    return {
+      teacher: row[0],      // A 欄 (索引 0) - 教學老師
+      class: row[1],        // B 欄 (索引 1) - 英語班級
+      name: row[2],         // C 欄 (索引 2) - 姓名
+      englishName: row[3],  // D 欄 (索引 3) - Eng.
+      mission1: row[4],     // E 欄 (索引 4) - Mission 1
+      mission2: row[5],     // F 欄 (索引 5) - Mission 2
+      mission3: row[6],     // G 欄 (索引 6) - Mission 3
+      mission4: row[7],     // H 欄 (索引 7) - Mission 4
+      mission5: row[8],     // I 欄 (索引 8) - Mission 5
+      rank: row[9]          // J 欄 (索引 9) - 最終頒獎台
+    };
+  });
+
+  // 根據排名升序排序
+  data.sort(function(a, b) {
+    return a.rank - b.rank;
+  });
+
+  return data;
 } 

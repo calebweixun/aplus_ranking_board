@@ -18,7 +18,7 @@ body[data-mission="2"] { background-color: #020A0F; }
 body[data-mission="3"] { background-color: #000000; }
 body[data-mission="4"] { background-color: #0D0E0F; }
 body[data-mission="5"] { background-color: #141414; }
-
+body[data-mission="podium"] { background-color: #141414; }
 /* 新增 page-wrapper 樣式 */
 #page-wrapper {
     max-width: 820px; /* 最大寬度 820px */
@@ -40,6 +40,7 @@ body[data-mission="5"] { background-color: #141414; }
 #page-wrapper[data-mission="3"] { background-image: url('bg3.webp'); }
 #page-wrapper[data-mission="4"] { background-image: url('bg4.webp'); }
 #page-wrapper[data-mission="5"] { background-image: url('bg5.webp'); }
+#page-wrapper[data-mission="podium"] { background-image: url('bg6.webp'); }
 
 header {
     /* background-color: rgba(255, 255, 255, 0.8); */ /* 可以恢復或調整 */
@@ -59,7 +60,7 @@ header h1 {
 .leaderboard-container {
     width: 85%;
     max-width: none;
-    margin: 18vh auto 0 auto; /* 將頂部 margin 改為 18vh */
+    margin: 22vh auto 0 auto; /* 將頂部 margin 改為 18vh */
     padding: 0; /* 移除左右 padding */
     height: 75vh; /* 設定固定高度，例如視窗高度的 60% */
     overflow-y: auto; /* 內容超出時，顯示垂直滾動條 */
@@ -198,18 +199,18 @@ header h1 {
     /* 移除預設的 transform */
     background-color: rgba(240, 240, 240, 0.9); /* 半透明背景 */
     padding: 10px 0 10px 10px; /* 移除右邊 padding */
-    width: 100px; /* 調整寬度 */
+    width: 130px; /* 調整寬度 */
     border-radius: 0 8px 8px 0; /* 右側圓角 */
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
     transition: transform 0.3s ease; /* 平滑動畫 */
     z-index: 1000; /* 確保在最上層 */
-    transform: translate(calc(-100% + 25px), -50%); /* 預設收合，露出 30px */
+    transform: translate(calc(-100% + 15px), -50%); /* 預設收合，露出 30px */
 }
 
 /* 新增: 使用 .expanded 控制展開 */
 #side-nav.expanded {
     transform: translate(0, -50%); /* 確保手機版完全展開 */
-    width: 100px; /* 增加展開時的寬度，確保按鈕文字完全顯示 */
+    width: 130px; /* 增加展開時的寬度，確保按鈕文字完全顯示 */
 }
 
 #side-nav button {
@@ -232,11 +233,11 @@ header h1 {
 @media (max-width: 480px) {
     #side-nav {
         transform: translate(calc(-100% + 25px), -50%); /* 手機版露出少一點 */
-        width: 130px; /* 手機版窄一點 */
+        width: 150px; /* 手機版窄一點 */
     }
     #side-nav.expanded {
         transform: translate(0, -50%); /* 確保手機版完全展開 */
-        width: 200px; /* 手機版展開寬度 */
+        width: 150px; /* 手機版展開寬度 */
     }
     #side-nav button {
         padding: 8px 15px 8px 8px; /* 調整手機 padding */
@@ -292,7 +293,7 @@ header h1 {
     cursor: not-allowed;
     pointer-events: none; /* 阻止所有滑鼠事件 */
     /* 鎖定時也強制移回收合狀態 */
-    transform: translate(calc(-100% + 30px), -50%) !important; /* 使用預設收合狀態 */
+    transform: translate(calc(-100% + 120px), -50%) !important; /* 使用預設收合狀態 */
 }
 /* 手機版鎖定樣式調整 */
 @media (max-width: 480px) {
@@ -363,4 +364,137 @@ header h1 {
 /* 確保正在載入時的容器有足夠的高度 */
 .leaderboard-container > div[style*="position: relative"] {
     min-height: 50vh !important;
-} 
+}
+
+/* 頒獎台樣式 */
+.podium-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    gap: 20px;
+}
+
+.podium-group {
+    width: 100%;
+    max-width: 600px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.podium-group h2 {
+    text-align: center;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 1.5em;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+
+}
+
+.podium-student {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+}
+
+.podium-student[data-rank="1"] {
+    border-bottom: 1px solid #4E360C;
+}
+
+.podium-student[data-rank="2"] {
+    border-bottom: 1px solid #FFF0E6;
+}
+
+.podium-student[data-rank="3"] {
+    border-bottom: 1px solid #FFDAB9;
+}
+
+.podium-student:last-child {
+    border-bottom: none;
+}
+
+.podium-student .info {
+    flex-grow: 1;
+}
+
+.podium-student .name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.podium-student .class {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.podium-student .teacher {
+    color: #888;
+    font-size: 0.8em;
+}
+
+.podium-student .score {
+    font-weight: bold;
+    font-size: 1.2em;
+    min-width: 50px;
+    text-align: right;
+}
+
+/* 頒獎台群組的特殊樣式 */
+.podium-group[data-rank="1"] {
+    background-color: #FACA84;
+}
+
+.podium-group[data-rank="1"] h2 {
+    color: #4E360C;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.podium-group[data-rank="2"] {
+    background-color: #C87B45;
+}
+
+.podium-group[data-rank="2"] h2 {
+    color: #FFF0E6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.podium-group[data-rank="3"] {
+    background-color: #994A34;
+}
+
+.podium-group[data-rank="3"] h2 {
+    color: #FFDAB9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.podium-group[data-rank="1"] .podium-student,
+.podium-group[data-rank="1"] .podium-student .class,
+.podium-group[data-rank="1"] .podium-student .teacher {
+    color: #4E360C;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+.podium-group[data-rank="2"] .podium-student,
+.podium-group[data-rank="2"] .podium-student .class,
+.podium-group[data-rank="2"] .podium-student .teacher {
+    color: #FFF0E6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.podium-group[data-rank="3"] .podium-student,
+.podium-group[data-rank="3"] .podium-student .class,
+.podium-group[data-rank="3"] .podium-student .teacher,
+.podium-group[data-rank="3"] h2 {
+    color: #FFDAB9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+
+}
+
+.podium-group[data-rank="1"] .podium-student .score,
+.podium-group[data-rank="2"] .podium-student .score,
+.podium-group[data-rank="3"] .podium-student .score {
+    /* color: #fff; */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
