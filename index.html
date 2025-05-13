@@ -21,19 +21,22 @@
         <main class="leaderboard-container">
             <!-- 積分卡片將會動態插入這裡 -->
         </main>
-    </div> <!-- page-wrapper 結束 -->
+    </div>
 
-    <!-- side-nav 保持在 wrapper 外部 -->
-    <nav id="side-nav">
-        <button data-mission-target="1">Mission 1</button>
-        <button data-mission-target="2">Mission 2</button>
-        <button data-mission-target="3">Mission 3</button>
-        <button data-mission-target="4">Mission 4</button>
-        <button data-mission-target="5">Mission 5</button>
-        <button data-mission-target="podium">科技大師獎名單</button>
-        <!-- 新增的收合按鈕 -->
-        <!-- <button id="nav-toggle-button">&gt;</button> -->
-    </nav>
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="搜尋姓名或班級...">
+        <div class="menu-container">
+            <select id="missionSelect">
+                <option value="1">Mission 1</option>
+                <option value="2">Mission 2</option>
+                <option value="3">Mission 3</option>
+                <option value="4">Mission 4</option>
+                <option value="5">Mission 5</option>
+                <option value="podium">科技大師獎</option>
+            </select>
+        </div>
+    </div>
+
     <script type="text/javascript" src="loading-bar.min.js"></script>
     <script src="script.js"></script>
 </body>

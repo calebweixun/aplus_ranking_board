@@ -60,13 +60,12 @@ header h1 {
 .leaderboard-container {
     width: 85%;
     max-width: none;
-    margin: 22vh auto 0 auto; /* 將頂部 margin 改為 18vh */
-    padding: 0; /* 移除左右 padding */
-    height: 75vh; /* 設定固定高度，例如視窗高度的 60% */
-    overflow-y: auto; /* 內容超出時，顯示垂直滾動條 */
-    /* 美化滾動條 (可選，跨瀏覽器兼容性需注意) */
-    scrollbar-width: thin; /* Firefox */
-    scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox */
+    margin: 15vh auto 80px auto; /* 增加底部邊距為 80px */
+    padding: 0;
+    height: 75vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
     position: relative;
     min-height: 300px;
 }
@@ -139,6 +138,8 @@ header h1 {
     }
     .leaderboard-container {
         width: 85%; /* 寬度調整 */
+        height: 73vh; /* 稍微增加手機列表高度以利用空間 */
+
     }
     .leaderboard-card .info p {
         font-size: 0.85em;
@@ -162,7 +163,7 @@ header h1 {
     .leaderboard-container {
         width: 85%;
         margin-top: 18vh; /* 手機頂部 margin 也改為 18vh */
-        height: 75vh; /* 稍微增加手機列表高度以利用空間 */
+        height: 69vh; /* 稍微增加手機列表高度以利用空間 */
     }
 
     .leaderboard-card {
@@ -497,4 +498,128 @@ header h1 {
 .podium-group[data-rank="3"] .podium-student .score {
     /* color: #fff; */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.search-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+#searchInput {
+    width: 60%;
+    height: 42px; /* 設定固定高度 */
+    padding: 0 1rem; /* 只保留左右內邊距 */
+    font-size: 1rem;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #333;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* 確保邊框不會影響總高度 */
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #2c5282;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+#searchInput::placeholder {
+    color: #718096;
+}
+
+.menu-container {
+    width: 40%;
+    display: flex;
+    align-items: center;
+}
+
+#missionSelect {
+    width: 100%;
+    height: 42px; /* 與搜尋框相同的高度 */
+    padding: 0 2.5rem 0 1rem; /* 只保留左右內邊距 */
+    font-size: 0.9rem;
+    border: 2px solid #4a90e2;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.95);
+    color: #333;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234a90e2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 1em;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* 確保邊框不會影響總高度 */
+}
+
+#missionSelect:hover {
+    border-color: #2c5282;
+    background-color: #f8f9fa;
+}
+
+#missionSelect:focus {
+    outline: none;
+    border-color: #2c5282;
+    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.3);
+}
+
+/* 手機版樣式調整 */
+@media (max-width: 768px) {
+    .search-container {
+        flex-direction: row;
+        padding: 0.8rem;
+        gap: 0.5rem;
+    }
+
+    #searchInput {
+        width: 60%;
+        height: 38px; /* 手機版稍微矮一點 */
+        font-size: 0.9rem;
+    }
+
+    .menu-container {
+        width: 40%;
+    }
+
+    #missionSelect {
+        height: 38px; /* 與搜尋框相同的高度 */
+        padding: 0 2rem 0 0.8rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* 無資料提示文字樣式 */
+.no-data-message {
+    position: absolute;
+    top: 15%; /* 與 loading 位置一致 */
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #ffffff;
+    font-size: 1.8rem; /* 與 loading 文字大小一致 */
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+}
+
+/* 手機版調整 */
+@media (max-width: 768px) {
+    .no-data-message {
+        font-size: 1.5rem;
+    }
 }

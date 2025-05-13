@@ -72,7 +72,7 @@ function testMsUpdate() {
   }
 
   // --- 您可以在此處添加更多測試案例，例如測試無效 action --- 
-  /*
+  
   Logger.log('\n測試無效 action: invalidAction');
   try {
     var invalidResult = msUpdate('invalidAction');
@@ -87,7 +87,7 @@ function testMsUpdate() {
      Logger.log('測試失敗：處理無效 action 時發生未預期的錯誤。');
      Logger.log('錯誤訊息: ' + error.message);
   }
-  */
+  
 
   Logger.log('\n所有測試執行完畢。');
 } 

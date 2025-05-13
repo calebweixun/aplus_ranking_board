@@ -1,11 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
     const leaderboardContainer = document.querySelector('.leaderboard-container');
     const pageWrapper = document.getElementById('page-wrapper');
-    const sideNav = document.getElementById('side-nav');
-    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzvxsgFAWhRhJK8ajCDJ_ubsy0I3sjxb72MpLtno4QcjSPJ6BvrMEfj6X-9p2t9LQnc/exec'; // 您的 Apps Script 網址
+    const searchInput = document.getElementById('searchInput');
+    const menuContainer = document.querySelector('.menu-container');
+    const missionSelect = document.getElementById('missionSelect');
+    const appsScriptUrl = 'https://script.google.com/macros/s/AKfycbzvxsgFAWhRhJK8ajCDJ_ubsy0I3sjxb72MpLtno4QcjSPJ6BvrMEfj6X-9p2t9LQnc/exec';
+
+    // 搜尋功能
+    function filterLeaderboard(searchTerm) {
+        const cards = leaderboardContainer.querySelectorAll('.leaderboard-card');
+        searchTerm = searchTerm.toLowerCase();
+
+        cards.forEach(card => {
+            const infoDiv = card.querySelector('.info');
+            const nameText = infoDiv.querySelector('p:first-child').textContent.toLowerCase();
+            const classText = infoDiv.querySelector('p:last-child').textContent.toLowerCase();
+
+            if (nameText.includes(searchTerm) || classText.includes(searchTerm)) {
+                card.style.display = '';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+
+        // 檢查是否有任何卡片顯示
+        const visibleCards = Array.from(cards).some(card => card.style.display !== 'none');
+
+        // 如果沒有顯示的卡片，顯示無搜尋結果訊息
+        const existingMessage = leaderboardContainer.querySelector('.no-data-message');
+        if (!visibleCards) {
+            if (!existingMessage) {
+                const message = document.createElement('p');
+                message.className = 'no-data-message';
+                message.textContent = '找不到符合的搜尋結果';
+                leaderboardContainer.appendChild(message);
+            }
+        } else {
+            // 如果有顯示的卡片，移除無搜尋結果訊息
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+        }
+    }
+
+    // 搜尋輸入事件監聽
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filterLeaderboard(e.target.value);
+        });
+    }
 
     // 修改：從 Hash 初始化 currentMission
-    let currentMission = '1'; // 預設值
+    let currentMission = '1';
     const hash = window.location.hash;
     if (hash === '#podium') {
         currentMission = 'podium';
@@ -16,17 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    let refreshIntervalId = null; // 用於存放 setInterval 的 ID
-    let isFetching = false; // *** 追蹤是否正在獲取資料 ***
+    let refreshIntervalId = null;
+    let isFetching = false;
 
     /**
      * 更新目前啟用任務按鈕的高亮狀態
      * @param {string} activeMissionNumber - 要高亮的 Mission 編號或 'podium'
      */
     function updateActiveMissionButton(activeMissionNumber) {
-        if (!sideNav) return;
+        if (!menuContainer) return;
 
-        const buttons = sideNav.querySelectorAll('button[data-mission-target]');
+        const buttons = menuContainer.querySelectorAll('button[data-mission-target]');
         buttons.forEach(button => {
             button.classList.remove('active-mission');
             const missionTarget = button.getAttribute('data-mission-target');
@@ -50,7 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
         leaderboardContainer.innerHTML = '';
 
         if (!data || data.length === 0) {
-            leaderboardContainer.innerHTML = '<p style="text-align: center; color: #ccc;">目前沒有排名資料。</p>';
+            const message = document.createElement('p');
+            message.className = 'no-data-message';
+            message.textContent = '目前沒有排名資料。';
+            leaderboardContainer.appendChild(message);
             return;
         }
 
@@ -117,7 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
         leaderboardContainer.innerHTML = '';
 
         if (!data || data.length === 0) {
-            leaderboardContainer.innerHTML = '<p style="text-align: center; color: #ccc;">目前沒有頒獎台資料。</p>';
+            const message = document.createElement('p');
+            message.className = 'no-data-message';
+            message.textContent = '目前沒有頒獎台資料。';
+            leaderboardContainer.appendChild(message);
             return;
         }
 
@@ -299,15 +351,15 @@ document.addEventListener('DOMContentLoaded', () => {
             // *** 因為 isFetching 只在手動切換開始時設為 true ***
             if (isManualSwitch) {
                 isFetching = false;
-                if (sideNav) {
-                    sideNav.classList.remove('nav-locked');
+                if (menuContainer) {
+                    menuContainer.classList.remove('nav-locked');
                     console.log('Side nav unlocked.');
 
                     // *** 修改：總是嘗試強制收合 (不再檢查 :hover) ***
                     setTimeout(() => {
-                        if (sideNav) {
+                        if (menuContainer) {
                             // 移除 expanded 類別來收合側邊欄
-                            sideNav.classList.remove('expanded');
+                            menuContainer.classList.remove('expanded');
                             console.log('Removing expanded class after fetch.');
                         }
                     }, 50);
@@ -397,14 +449,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
             // 解除 UI 鎖定
             isFetching = false;
-            if (sideNav) {
-                sideNav.classList.remove('nav-locked');
+            if (menuContainer) {
+                menuContainer.classList.remove('nav-locked');
                 console.log('Side nav unlocked.');
 
                 // 強制收合側邊欄
                 setTimeout(() => {
-                    if (sideNav) {
-                        sideNav.classList.remove('expanded');
+                    if (menuContainer) {
+                        menuContainer.classList.remove('expanded');
                         console.log('Removing expanded class after fetch.');
                     }
                 }, 50);
@@ -452,8 +504,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 設定 fetching 狀態並鎖定 UI
         isFetching = true;
-        if (sideNav) {
-            sideNav.classList.add('nav-locked');
+        if (menuContainer) {
+            menuContainer.classList.add('nav-locked');
             console.log('Side nav locked.');
         }
 
@@ -477,13 +529,39 @@ document.addEventListener('DOMContentLoaded', () => {
         setupAutoRefresh();
     }
 
-    // 修改：初始化頁面
+    /**
+     * 更新目前啟用任務的下拉選單選項
+     * @param {string} activeMissionNumber - 要選中的 Mission 編號或 'podium'
+     */
+    function updateActiveMissionSelect(activeMissionNumber) {
+        if (!missionSelect) return;
+        missionSelect.value = activeMissionNumber;
+    }
+
+    // 修改：選單事件監聽
+    if (missionSelect) {
+        missionSelect.addEventListener('change', (event) => {
+            const missionTarget = event.target.value;
+            if (isFetching) {
+                console.log('Fetch in progress, preventing mission switch.');
+                return;
+            }
+            if (missionTarget === currentMission) {
+                console.log('Already on this mission.');
+                return;
+            }
+
+            switchMission(missionTarget);
+        });
+    }
+
+    // 初始化頁面
     if (pageWrapper) {
         pageWrapper.setAttribute('data-mission', currentMission);
         document.body.dataset.mission = currentMission;
     }
 
-    // 修改：根據 currentMission 載入對應資料
+    // 根據 currentMission 載入對應資料
     if (currentMission === 'podium') {
         fetchPodiumData();
     } else {
@@ -493,109 +571,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 更新按鈕高亮
     updateActiveMissionButton(currentMission);
 
+    // 更新下拉選單選項
+    updateActiveMissionSelect(currentMission);
+
     // 設定自動更新
     setupAutoRefresh();
 
-    // 修改：側邊導覽列事件監聽
-    if (sideNav) {
-        sideNav.addEventListener('click', (event) => {
-            const button = event.target.closest('button[data-mission-target]');
-            if (button) {
-                const missionTarget = button.getAttribute('data-mission-target');
-                if (isFetching) {
-                    console.log('Fetch in progress, preventing mission switch.');
-                    return;
-                }
-                if (missionTarget === currentMission) {
-                    console.log('Already on this mission.');
-                    return;
-                }
-
-                // 先移除 expanded 類別來收合側邊欄
-                sideNav.classList.remove('expanded');
-                console.log('Side nav collapsed before mission switch.');
-
-                // 然後切換任務
-                switchMission(missionTarget);
-            }
-        });
-    }
-
-    // 修改：監聽 hash 變化
+    // 監聽 hash 變化
     window.addEventListener('hashchange', handleHashChange);
-
-    // *** 新增：閒置自動收合邏輯 ***
-    let idleTimerId = null;
-    if (sideNav) {
-        sideNav.addEventListener('mouseenter', () => {
-            if (idleTimerId !== null) {
-                clearTimeout(idleTimerId);
-                idleTimerId = null;
-                // console.log('Idle timer cleared on mouseenter.');
-            }
-
-            // 添加 expanded 類別來展開側邊欄
-            sideNav.classList.add('expanded');
-            console.log('Side nav expanded by mouseenter');
-        });
-
-        sideNav.addEventListener('mouseleave', () => {
-            // 先清除可能存在的舊計時器
-            if (idleTimerId !== null) {
-                clearTimeout(idleTimerId);
-            }
-            // console.log('Mouse left side-nav, starting idle timer.');
-            idleTimerId = setTimeout(() => {
-                // 移除 expanded 類別來收合側邊欄
-                if (sideNav && !sideNav.classList.contains('nav-locked')) {
-                    console.log('Idle timer triggered. Collapsing nav.');
-                    sideNav.classList.remove('expanded');
-                } else {
-                    // console.log('Idle timer triggered but conditions not met for collapse.');
-                }
-                idleTimerId = null; // 計時器完成後重置 ID
-            }, 3000); // 3 秒閒置時間
-        });
-    }
-
-    function changeMission(missionNumber) {
-        const pageWrapper = document.getElementById('page-wrapper');
-        if (pageWrapper) {
-            pageWrapper.dataset.mission = missionNumber;
-            document.body.dataset.mission = missionNumber; // 同步更新 body
-        }
-        console.log(`已切換至 Mission ${missionNumber}`);
-        history.pushState(null, null, `#mis${missionNumber}`);
-        // loadLeaderboardData(missionNumber);
-    }
-
-    function handleHashChange() {
-        const hash = window.location.hash;
-        let missionNumber = '1';
-        const pageWrapper = document.getElementById('page-wrapper');
-
-        if (hash === '#podium') {
-            missionNumber = 'podium';
-        } else if (hash.startsWith('#mis')) {
-            const num = parseInt(hash.substring(4));
-            if (!isNaN(num) && num >= 1 && num <= 5) {
-                missionNumber = num.toString();
-            }
-        }
-
-        // 確保 pageWrapper 和 body 的 data-mission 更新
-        if (pageWrapper) {
-            const currentMission = pageWrapper.dataset.mission;
-            if (currentMission !== missionNumber) {
-                pageWrapper.dataset.mission = missionNumber;
-                document.body.dataset.mission = missionNumber;
-                console.log(`透過 Hash 切換至 ${missionNumber === 'podium' ? '頒獎台' : 'Mission ' + missionNumber}`);
-                if (missionNumber === 'podium') {
-                    fetchPodiumData();
-                } else {
-                    fetchLeaderboardData(parseInt(missionNumber), true);
-                }
-            }
-        }
-    }
 }); 
