@@ -133,9 +133,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const infoDiv = document.createElement('div');
             infoDiv.classList.add('info');
             const nameP = document.createElement('p');
-            nameP.textContent = `${item.name || 'N/A'} (${item.englishName || 'N/A'})`;
+            nameP.textContent = `${item.name ? item.name.replace(/^(.)(.)(.)?(.)?$/, (_, p1, p2, p3, p4) => {
+                if (p4) return `${p1}${p2}○${p4}`; // 四字
+                if (p3) return `${p1}○${p3}`; // 三字
+                return `${p1}○`; // 二字
+            }) : 'N/A'} ${item.englishName || 'N/A'}`;
             const classP = document.createElement('p');
-            classP.textContent = `班級: ${item.class || 'N/A'}`;
+            classP.textContent = `${item.class || 'N/A'}`;
             infoDiv.appendChild(nameP);
             infoDiv.appendChild(classP);
             card.appendChild(infoDiv);
@@ -338,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Apps Script Error: ${data.message}`);
             }
 
-            console.log(`Data received for Mission ${missionNumber}:`, data);
+            // console.log(`Data received for Mission ${missionNumber}:`, data);
             updateLeaderboardUI(data); // 成功後更新 UI (會覆蓋 loading-bar)
 
         } catch (error) {
@@ -440,7 +444,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Apps Script Error: ${data.message}`);
             }
 
-            console.log('Podium data received:', data);
             updatePodiumUI(data);
 
         } catch (error) {
