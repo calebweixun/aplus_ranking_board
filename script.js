@@ -232,7 +232,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     const nameDiv = document.createElement('div');
                     nameDiv.className = 'name';
-                    nameDiv.textContent = `${student.name} (${student.englishName})`;
+                    // nameDiv.textContent = `${student.name} (${student.englishName})`;
+                    nameDiv.textContent = `${student.name ? student.name.replace(/^(.)(.)(.)?(.)?$/, (_, p1, p2, p3, p4) => {
+                        if (p4) return `${p1}${p2}○${p4}`; // 四字
+                        if (p3) return `${p1}○${p3}`; // 三字
+                        return `${p1}○`; // 二字
+                    }) : 'N/A'} ${student.englishName || 'N/A'}`;
                     infoDiv.appendChild(nameDiv);
 
                     const classDiv = document.createElement('div');
